@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Context IQ Legal Assistant — Audit Log & Citations</title>
+  <meta name="description" content="Context-aware contract guidance with Audit Log & Citations. See why each suggestion is made. Export the trail in one click."/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="hero">
+    <div class="container">
+      <div class="nav">
+        <div class="brand">Context IQ</div>
+        <div class="inline">
+          <a href="#how">How it works</a>
+          <a href="#proof">Proof</a>
+          <a href="#faq">FAQ</a>
+          <button class="btn outline" id="export-metrics" title="Download local interaction metrics (JSON)">Export Metrics</button>
+        </div>
+      </div>
+      <div class="grid">
+        <div>
+          <span class="badge">MVP • Audit Log & Citations</span>
+          <h1>Contract drafting you can actually trust.</h1>
+          <p class="sub">Transparent guidance with a <strong>Why?</strong> panel and an exportable audit trail—right inside Word.</p>
+          <div class="cta">
+            <button class="btn" id="join">Join the waitlist</button>
+            <button class="btn outline" id="book">Book a 15‑min demo</button>
+            <button class="btn outline" id="open-demo">See the Why?</button>
+          </div>
+          <form class="form" id="waitlist-form" style="margin-top:12px">
+            <input class="input" id="email" type="email" placeholder="Work email"/>
+            <input class="input" id="role" placeholder="Your role (e.g., Commercial Counsel)"/>
+            <button class="btn" type="submit">Submit</button>
+          </form>
+          <div class="note">No backend required. The form opens your email client (mailto). Replace with your own endpoint later.</div>
+          <div class="note">Download deck: <a href="docs/ContextIQ_MVP.pptx">Core feature + validation plan (PPTX)</a></div>
+        </div>
+        <div>
+          <img src="assets/audit_log_mock.svg" alt="Audit Log & Citations mock"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section" id="problem">
+      <div class="kicker">Problem</div>
+      <h2>Opaque AI redlines stall adoption.</h2>
+      <div class="cards">
+        <div class="card">
+          <strong>Missing context</strong>
+          <p class="small">Tools ignore leverage, relationships, and timing—so counsel can’t trust recommendations.</p>
+        </div>
+        <div class="card">
+          <strong>Static playbooks</strong>
+          <p class="small">Rules go stale. Teams need a living playbook that learns from outcomes.</p>
+        </div>
+        <div class="card">
+          <strong>Slow & confusing</strong>
+          <p class="small">Heavy systems slow teams. A familiar assistant with proof wins.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="how">
+      <div class="kicker">How it works</div>
+      <h2>Context intake → Inline guidance → Human review → Audit export</h2>
+      <div class="cards">
+        <div class="card">
+          <strong>Context intake</strong>
+          <ul class="list">
+            <li>Deal size, urgency, relationship history</li>
+            <li>Risk posture toggles</li>
+          </ul>
+        </div>
+        <div class="card">
+          <strong>Inline guidance</strong>
+          <ul class="list">
+            <li>Clause suggestions with a <em>Why?</em> panel</li>
+            <li>Citations to policy & precedent</li>
+          </ul>
+        </div>
+        <div class="card">
+          <strong>Human review</strong>
+          <ul class="list">
+            <li>Approve / Edit / Reject</li>
+            <li>Each action is logged</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="proof">
+      <div class="kicker">Proof you can inspect</div>
+      <h2>Every suggestion comes with receipts.</h2>
+      <table class="table">
+        <thead><tr><th>Field</th><th>Description (v1)</th></tr></thead>
+        <tbody>
+          <tr><td>event_type</td><td>suggestion_shown | applied | edited | rejected</td></tr>
+          <tr><td>contract_id</td><td>Internal identifier for the contract/matter</td></tr>
+          <tr><td>clause_id</td><td>Clause or section identifier</td></tr>
+          <tr><td>model_version</td><td>Model or ruleset id used for the suggestion</td></tr>
+          <tr><td>source_ref</td><td>Policy/precedent id used for citation</td></tr>
+          <tr><td>user_id</td><td>Reviewer or author</td></tr>
+          <tr><td>timestamp_utc</td><td>ISO 8601 timestamp</td></tr>
+          <tr><td>diff_hash</td><td>Hash of the text delta (integrity/check)</td></tr>
+          <tr><td>prev_event_hash</td><td>Hash chain pointer for tamper-evidence</td></tr>
+        </tbody>
+      </table>
+      <p class="small">Export your audit as CSV/JSON. Start simple; harden later.</p>
+    </div>
+
+    <div class="section" id="who">
+      <div class="kicker">Who it’s for</div>
+      <h2>In‑house Commercial Counsel & Contract Managers</h2>
+      <p class="small">Mid‑market B2B (SaaS, services) moving NDAs, MSAs/Order Forms, and DPAs faster—without blind trust.</p>
+    </div>
+
+    <div class="section" id="faq">
+      <div class="kicker">FAQ</div>
+      <h2>Still wondering?</h2>
+      <dl class="faq">
+        <dt>Does this replace lawyers?</dt>
+        <dd>No. It explains suggestions and documents decisions so counsel stays in control.</dd>
+        <dt>Where does it run?</dt>
+        <dd>MVP targets Word with export to your CLM or Drive; add more editors later.</dd>
+        <dt>Privacy?</dt>
+        <dd>Tenant-isolated logs and minimal PII in events. You control exports.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="container">
+      <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <div>
+          <h3>Ready to move faster with proof?</h3>
+          <p class="small">Join the waitlist or book a short demo.</p>
+        </div>
+        <div class="cta" style="justify-content:flex-end;align-items:center">
+          <button class="btn" id="join-footer">Join the waitlist</button>
+          <a class="btn outline" href="docs/ContextIQ_MVP.pptx">Download the deck</a>
+        </div>
+      </div>
+      <p class="small">© Context IQ. MVP build for evaluation only.</p>
+    </div>
+  </div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Audit Log & Citations demo">
+    <div class="panel">
+      <header>
+        <strong>“Why?” Panel & Audit Trail — Demo</strong>
+        <button id="close-modal" class="close" aria-label="Close">✕</button>
+      </header>
+      <div class="body">
+        <img src="assets/audit_log_mock.svg" alt="Demo image" style="width:100%; border:1px solid #e5e7eb; border-radius:10px"/>
+        <p class="small">Every suggestion shows its source (policy/precedent) and writes an event when you Apply, Edit, or Reject. Export the trail as CSV/JSON.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

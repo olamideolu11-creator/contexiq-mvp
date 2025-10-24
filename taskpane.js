@@ -45,16 +45,19 @@ function setupWord() {
   };
 }
 
-function setupPowerPoint() {
-  document.getElementById("insertSlide").onclick = async () => {
-    await PowerPoint.run(async (context) => {
-      const slides = context.presentation.slides;
-      const slide = slides.add();
-      slide.title = "Context IQ Suggestion";
-      slide.content = "Consider revising clause 4.2 for clarity and compliance.";
-      await context.sync();
-      logEvent("slide_inserted", "Inserted suggestion slide in PowerPoint");
-    });
+  function setupPowerPoint() {
+  document.getElementById("insertSlide").onclick = () => {
+    Office.context.document.setSelectedDataAsync(
+      "🔍 Context IQ Suggestion:\nConsider revising clause 4.2 for clarity and compliance.",
+      { coercionType: Office.CoercionType.Text },
+      (asyncResult) => {
+        if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
+          logEvent("slide_inserted", "Inserted suggestion text into PowerPoint slide");
+        } else {
+          logEvent("error", "Failed to insert suggestion: " + asyncResult.error.message);
+        }
+      }
+    );
   };
 }
 

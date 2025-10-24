@@ -1,74 +1,51 @@
-<script src="taskpane.js"></script>
-Office.onReady(() => {
-  // Show a message if not running in Word
-  if (!Office.context.requirements.isSetSupported("WordApi", "1.1")) {
-    document.getElementById("hostNotice").style.display = "block";
-    document.getElementById("hostNotice").innerText = "This add-in only works in Word.";
-    return;
-  }
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Context IQ — Audit Log & Citations (MVP)</title>
+  <link rel="stylesheet" href="taskpane.css"/>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>
+  <header>
+    <div class="brand">Context IQ</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn ghost" id="export">Export Audit (CSV)</button>
+      <a class="btn ghost" href="docs/ContextIQ_MVP.pptx" target="_blank">Deck</a>
+    </div>
+  </header>
 
-  // Scan for clauses (mocked with content controls)
-  document.getElementById("scan").onclick = async () => {
-    await Word.run(async (context) => {
-      const body = context.document.body;
-      const clauses = [
-        { title: "Limitation of Liability", tag: "clause_lol" },
-        { title: "Indemnity", tag: "clause_indemnity" },
-        { title: "Governing Law", tag: "clause_law" }
-      ];
+  <div class="wrap">
+    <div class="badge">MVP</div>
+    <h3>Audit Log & Citations — working demo</h3>
+    <div id="hostNotice" class="notice" style="display:none"></div>
 
-      clauses.forEach((clause) => {
-        const range = body.insertParagraph(`🔍 ${clause.title}: [Insert clause text here]`, Word.InsertLocation.end);
-        const cc = range.insertContentControl();
-        cc.tag = clause.tag;
-        cc.title = clause.title;
-        cc.appearance = "BoundingBox";
-      });
+    <div class="card">
+      <div class="label">1) Scan document for issues</div>
+      <button class="btn" id="scan">Scan for clauses</button>
+      <p class="small">Finds <em>Limitation of Liability</em>, <em>Indemnity</em>, and <em>Governing Law</em> and marks them with content controls.</p>
+    </div>
 
-      await context.sync();
-      logEvent("scan_complete", "Scanned and marked clauses");
-    });
-  };
+    <div class="card">
+      <div class="label">2) Why? (for selected clause)</div>
+      <button class="btn ghost" id="why">Show Why?</button>
+      <pre id="whyOut" class="small"></pre>
+    </div>
 
-  // Show "Why?" explanation
-  document.getElementById("why").onclick = () => {
-    const explanation = `This clause is flagged due to high risk exposure. Based on Policy-123 and past redlines.`;
-    document.getElementById("whyOut").innerText = explanation;
-    logEvent("why_shown", explanation);
-  };
+    <div class="card">
+      <div class="label">3) Apply suggestion (selected clause)</div>
+      <button class="btn" id="apply">Apply suggestion</button>
+      <p class="small">Put the cursor inside a marked clause, then click.</p>
+    </div>
 
-  // Apply suggestion to selected clause
-  document.getElementById("apply").onclick = async () => {
-    await Word.run(async (context) => {
-      const selection = context.document.getSelection();
-      selection.insertText("✅ Suggested revision applied.", Word.InsertLocation.replace);
-      await context.sync();
-      logEvent("suggestion_applied", "User applied suggestion to selected clause");
-    });
-  };
+    <div class="card">
+      <div class="label">Audit events</div>
+      <div id="events" class="log"></div>
+    </div>
+  </div>
 
-  // Export audit log as CSV
-  document.getElementById("export").onclick = () => {
-    const rows = auditLog.map((e) => `${e.timestamp},${e.event},${e.details}`);
-    const csv = ["timestamp,event,details", ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "audit_log.csv";
-    link.click();
-  };
-});
-
-// Simple audit log
-const auditLog = [];
-
-function logEvent(event, details) {
-  const timestamp = new Date().toISOString();
-  auditLog.push({ timestamp, event, details });
-
-  const logDiv = document.getElementById("events");
-  const entry = document.createElement("div");
-  entry.className = "log-entry";
-  entry.innerText = `${timestamp} — ${event}: ${details}`;
-  logDiv.prepend(entry);
-}
+  <!-- ✅ This connects your logic -->
+  <script src="taskpane.js"></script>
+</body>
+</html>

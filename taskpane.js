@@ -1,12 +1,12 @@
-Office.onReady(() => {
-  // Show a message if not running in Word
-  if (!Office.context.requirements.isSetSupported("WordApi", "1.1")) {
-    document.getElementById("hostNotice").style.display = "block";
-    document.getElementById("hostNotice").innerText = "This add-in only works in Word.";
-    return;
+Office.onReady((info) => {
+  if (info.host === Office.HostType.Word) {
+    setupWord();
+  } else if (info.host === Office.HostType.PowerPoint) {
+    setupPowerPoint();
   }
+});
 
-  // Scan for clauses (mocked with content controls)
+function setupWord() {
   document.getElementById("scan").onclick = async () => {
     await Word.run(async (context) => {
       const body = context.document.body;
@@ -17,8 +17,8 @@ Office.onReady(() => {
       ];
 
       clauses.forEach((clause) => {
-        const range = body.insertParagraph(`🔍 ${clause.title}: [Insert clause text here]`, Word.InsertLocation.end);
-        const cc = range.insertContentControl();
+        const para = body.insertParagraph(`🔍 ${clause.title}: [Insert clause text here]`, Word.InsertLocation.end);
+        const cc = para.insertContentControl();
         cc.tag = clause.tag;
         cc.title = clause.title;
         cc.appearance = "BoundingBox";
@@ -29,14 +29,12 @@ Office.onReady(() => {
     });
   };
 
-  // Show "Why?" explanation
   document.getElementById("why").onclick = () => {
     const explanation = `This clause is flagged due to high risk exposure. Based on Policy-123 and past redlines.`;
     document.getElementById("whyOut").innerText = explanation;
     logEvent("why_shown", explanation);
   };
 
-  // Apply suggestion to selected clause
   document.getElementById("apply").onclick = async () => {
     await Word.run(async (context) => {
       const selection = context.document.getSelection();
@@ -45,20 +43,22 @@ Office.onReady(() => {
       logEvent("suggestion_applied", "User applied suggestion to selected clause");
     });
   };
+}
 
-  // Export audit log as CSV
-  document.getElementById("export").onclick = () => {
-    const rows = auditLog.map((e) => `${e.timestamp},${e.event},${e.details}`);
-    const csv = ["timestamp,event,details", ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "audit_log.csv";
-    link.click();
+function setupPowerPoint() {
+  document.getElementById("insertSlide").onclick = async () => {
+    await PowerPoint.run(async (context) => {
+      const slides = context.presentation.slides;
+      const slide = slides.add();
+      slide.title = "Context IQ Suggestion";
+      slide.content = "Consider revising clause 4.2 for clarity and compliance.";
+      await context.sync();
+      logEvent("slide_inserted", "Inserted suggestion slide in PowerPoint");
+    });
   };
-});
+}
 
-// Simple audit log
+// Audit log
 const auditLog = [];
 
 function logEvent(event, details) {

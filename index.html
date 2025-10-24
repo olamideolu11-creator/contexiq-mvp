@@ -6,6 +6,8 @@
   <title>Context IQ Legal Assistant — Audit Log & Citations</title>
   <meta name="description" content="Context-aware contract guidance with Audit Log & Citations. See why each suggestion is made. Export the trail in one click."/>
   <link rel="stylesheet" href="styles.css"/>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+
 </head>
 <body>
   <div class="hero">
@@ -162,5 +164,44 @@
   </div>
 
   <script src="script.js"></script>
-</body>
+Office.onReady(() => {
+  // Insert a suggestion into the Word document
+  const insertButton = document.getElementById("open-demo");
+  if (insertButton) {
+    insertButton.onclick = async () => {
+      await Word.run(async (context) => {
+        const body = context.document.body;
+        body.insertText(
+          "🔍 Context IQ Suggestion: Consider revising clause 4.2 for clarity and compliance.",
+          Word.InsertLocation.end
+        );
+        await context.sync();
+      });
+    };
+  }
+
+  // Export metrics as JSON
+  const exportButton = document.getElementById("export-metrics");
+  if (exportButton) {
+    exportButton.onclick = () => {
+      const metrics = {
+        event_type: "suggestion_applied",
+        contract_id: "demo_contract_001",
+        clause_id: "4.2",
+        model_version: "v1.0",
+        source_ref: "Policy-123",
+        user_id: "olami",
+        timestamp_utc: new Date().toISOString(),
+        diff_hash: "abc123",
+        prev_event_hash: "xyz789"
+      };
+
+      const blob = new Blob([JSON.stringify(metrics, null, 2)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "metrics.json";
+      link.click();
+    };
+  }
+});
 </html>
